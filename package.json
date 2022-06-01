@@ -1,0 +1,25 @@
+{
+	"name": "express-caching",
+	"version": "1.0.0",
+	"description": "Example tips and trick how to reduce and faster load data using redis",
+	"main": "index.js",
+	"scripts": {
+		"start": "npm start index.js"
+	},
+	"keywords": [
+		"redis",
+		"caching",
+		"nodejs",
+		"express",
+		"msgpack"
+	],
+	"author": "Restu Wahyu Saputra",
+	"license": "MIT",
+	"dependencies": {
+		"axios": "^0.27.2",
+		"express": "^4.18.1",
+		"ioredis": "^5.0.5",
+		"jsonpack": "^1.1.5",
+		"msgpack-lite": "^0.1.26"
+	}
+}
