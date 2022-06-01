@@ -36,7 +36,7 @@ app.get('/jph', async (req, res, next) => {
 
 app.get('/jph-cache-json', async (req, res, next) => {
 	try {
-		const keys = await redis.exists('cache:photos:json')
+		const keys = await redis.hexists('jph', 'json')
 
 		if (!keys) {
 			const [comments, albums, photos, posts, todos, users] = await Promise.all([
@@ -49,12 +49,12 @@ app.get('/jph-cache-json', async (req, res, next) => {
 			])
 			const data = { comments: comments.data, albums: albums.data, photos: photos.data, posts: posts.data, todos: todos.data, users: users.data }
 
-			await redis.expire('cache:jph:json', 3600)
-			await redis.hset('cache:jph:json', { jph: JSON.stringify(data) })
+			await redis.expire('jph', 3600)
+			await redis.hset('jph', { json: JSON.stringify(data) })
 
 			return res.status(200).json({ msg: 'success', data: data })
 		} else {
-			const jph = await redis.hget('cache:jph:json', 'jph')
+			const jph = await redis.hget('jph', 'json')
 			const data = JSON.parse(jph)
 
 			return res.status(200).json({ msg: 'success', data: data })
@@ -67,7 +67,7 @@ app.get('/jph-cache-json', async (req, res, next) => {
 
 app.get('/jph-cache-msgpack', async (req, res, next) => {
 	try {
-		const keys = await redis.exists('cache:jph:msgpack')
+		const keys = await redis.hexists('jph', 'msgpack')
 
 		if (!keys) {
 			const [comments, albums, photos, posts, todos, users] = await Promise.all([
@@ -80,12 +80,12 @@ app.get('/jph-cache-msgpack', async (req, res, next) => {
 			])
 			const data = { comments: comments.data, albums: albums.data, photos: photos.data, posts: posts.data, todos: todos.data, users: users.data }
 
-			await redis.expire('cache:jph:msgpack', 3600)
-			await redis.hset('cache:jph:msgpack', { jph: msgpack.pack(data) })
+			await redis.expire('jph', 3600)
+			await redis.hsetBuffer('jph', { msgpack: msgpack.pack(data) })
 
 			return res.status(200).json({ msg: 'success', data: data })
 		} else {
-			const jph = await redis.hgetBuffer('cache:jph:msgpack', 'jph')
+			const jph = await redis.hgetBuffer('jph', 'msgpack')
 			const data = msgpack.unpack(jph)
 
 			return res.status(200).json({ msg: 'success', data: data })

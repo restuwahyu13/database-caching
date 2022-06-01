@@ -4,7 +4,7 @@
 	"description": "Example tips and trick how to reduce and faster load data using redis",
 	"main": "index.js",
 	"scripts": {
-		"start": "npm start index.js"
+		"start": "node index.js"
 	},
 	"keywords": [
 		"redis",
