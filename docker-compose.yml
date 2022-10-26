@@ -1,0 +1,78 @@
+version: "3"
+services:
+  ##########################
+  #  APP SERVICE ENVIRONMENT
+  ##########################
+  app:
+    build: .
+    restart: always
+    healthcheck:
+      test: "env | grep SHELL_SESSION_ID"
+      interval: 60s
+      timeout: 30s
+      retries: 3
+      start_period: 15s
+    ports:
+      - 3000
+    env_file: .env
+    depends_on:
+      - database
+    volumes:
+      - ./:/usr/share/app
+      - /usr/share/app/node_modules
+    networks:
+      - node_networks
+  ##############################
+  # DATABASE SERVICE ENVIRONMENT
+  ##############################
+  database:
+    image: postgres:14-alpine
+    restart: always
+    healthcheck:
+      test: "env | grep SHELL_SESSION_ID"
+      interval: 60s
+      timeout: 30s
+      retries: 3
+      start_period: 15s
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${PG_USER}
+      POSTGRES_PASSWORD: ${PG_PASSWORD}
+      POSTGRES_DB: ${PG_DBNAME}
+    ports:
+      - 5432:5432
+    volumes:
+      - database:/var/lib/postgresql
+    networks:
+      - node_networks
+  #############################
+  # CACHING SERVICES ENVIRONMENT
+  #############################
+  caching:
+    restart: always
+    image: redis:6.2.1-alpine
+    healthcheck:
+      test: "env | grep SHELL_SESSION_ID"
+      interval: 60s
+      timeout: 30s
+      retries: 3
+      start_period: 15s
+    env_file: .env
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    volumes:
+      - caching:/var/lib/redis/data
+    networks:
+      - node_networks
+# VOLUME PERSISTENT DATA
+#############################
+volumes:
+  database:
+  caching:
+#############################
+# NETWORKS SHARING GROUP
+#############################
+networks:
+  node_networks:

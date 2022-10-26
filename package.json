@@ -1,25 +1,101 @@
 {
-	"name": "express-caching",
-	"version": "1.0.0",
-	"description": "Example tips and trick how to reduce and faster load data using redis",
-	"main": "index.js",
-	"scripts": {
-		"start": "node index.js"
-	},
-	"keywords": [
-		"redis",
-		"caching",
-		"nodejs",
-		"express",
-		"msgpack"
-	],
-	"author": "Restu Wahyu Saputra",
-	"license": "MIT",
-	"dependencies": {
-		"axios": "^0.27.2",
-		"express": "^4.18.1",
-		"ioredis": "^5.0.5",
-		"jsonpack": "^1.1.5",
-		"msgpack-lite": "^0.1.26"
-	}
+  "name": "database-caching",
+  "version": "1.0.0",
+  "description": "How to cache database using redis",
+  "main": "./dist/main.js",
+  "scripts": {
+    "ts-bin": "ts-node -r tsconfig-paths/register",
+    "ts-bin:dev": "cross-env NODE_ENV=development nodemon src/main.ts",
+    "ts-bin:prod": "tsc -P tsconfig.json && tsc-alias",
+    "typeorm:seeding": "npm run ts-bin ./node_modules/typeorm-seeding/dist/cli.js",
+    "typeorm:cli": "npm run ts-bin ./node_modules/typeorm/cli.js",
+    "cleanup": "rimraf dist",
+    "start": "node dist/main.js",
+    "start:docker": "pm2-runtime dist/pm2.config.js",
+    "build": "npm run cleanup && npm run ts-bin:prod && shx cp pm2.config.js ./dist",
+    "dev": "DEBUG=* npm run ts-bin:dev",
+    "seed:config": "npm run typeorm:seeding config",
+    "seed:run": "npm run ts-bin ./node_modules/typeorm-seeding/dist/cli.js seed",
+    "seed:runrollmig": "npm run mig:rollback && npm run mig:latest && npm run seed:run",
+    "seed:runmig": "npm run mig:latest && npm run seed:run",
+    "mig:rollback": "npm run typeorm:cli schema:drop",
+    "mig:latest": "npm run typeorm:cli migration:run",
+    "mig:list": "npm run typeorm:cli migration:show",
+    "mig:make": "cross-env NODE_ENV=development ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js migration:create --name"
+  },
+  "author": {
+    "name": "Restu Wahyu Saputra",
+    "email": "restuwahyu13@gmail.com",
+    "url": "https://github.com/restuwahyu13"
+  },
+  "maintainers": [
+    "Restu Wahyu Saputra"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/restuwahyu13/database-caching"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=14",
+    "npm": ">=6"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
+    "compression": "^1.7.4",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "express-async-errors": "^3.1.1",
+    "helmet": "^5.1.0",
+    "hpp": "^0.2.3",
+    "http-status-codes": "^2.2.0",
+    "ioredis": "^4.28.5",
+    "jsonwebtoken": "^8.5.1",
+    "jwt-transform": "^0.0.4",
+    "moment": "^2.29.4",
+    "morgan": "^1.10.0",
+    "msgpack-lite": "^0.1.26",
+    "pg": "^8.8.0",
+    "tsyringe": "^4.6.0",
+    "typedi": "^0.10.0",
+    "typeorm": "^0.2.45",
+    "typeorm-typedi-extensions": "^0.4.1"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/body-parser": "^1.19.2",
+    "@types/compression": "^1.7.2",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
+    "@types/faker": "^5.5.9",
+    "@types/helmet": "^4.0.0",
+    "@types/hpp": "^0.2.2",
+    "@types/http-status-codes": "^1.2.0",
+    "@types/ioredis": "^4.28.10",
+    "@types/jsonwebtoken": "^8.5.9",
+    "@types/moment": "^2.13.0",
+    "@types/morgan": "^1.9.3",
+    "@types/msgpack-lite": "^0.1.8",
+    "@types/node": "^18.0.0",
+    "@types/pg": "^8.6.5",
+    "@types/prettier": "^2.6.3",
+    "@types/rimraf": "^3.0.2",
+    "cross-env": "^7.0.3",
+    "faker": "^5.5.3",
+    "nodemon": "^2.0.16",
+    "prettier": "^2.7.1",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.2",
+    "shx": "^0.3.4",
+    "ts-node": "^10.8.1",
+    "tsc-alias": "^1.6.3",
+    "tsconfig-paths": "^3.11.0",
+    "tslib": "^2.4.0",
+    "typeorm-seeding": "^1.6.1",
+    "typescript": "^4.7.3"
+  }
 }
